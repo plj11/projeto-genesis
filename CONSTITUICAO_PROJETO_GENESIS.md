@@ -197,8 +197,8 @@ q53jB30SWRGpt/eaOb6R6UWgq+XMklOzCOPj5L+mYP4=
 *   **Ação:** Inicializar um novo projeto Next.js com Tailwind CSS.
     *   **Status:** Concluído. O projeto Next.js foi criado em `/Users/paulovictor/projeto-genesis`.
 *   **Ação:** Criar o repositório no GitHub.
-    *   **Status:** Pendente.
+    *   **Status:** Concluído. Código enviado para https://github.com/plj11/projeto-genesis.git
 *   **Ação:** Configurar o projeto no Vercel.
-    *   **Status:** Pendente.
+    *   **Status:** Pendente (aguardando sua ação manual).
 *   **Resultado do Dia:** Uma página "Em breve" está no ar em uma URL pública (ex: genesis-poc.vercel.app). O pipeline de deploy está funcionando.
-    *   **Status:** Pendente (depende das ações acima).
+    *   **Status:** Pendente (aguardando sua ação manual).
