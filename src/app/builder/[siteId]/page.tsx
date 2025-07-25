@@ -19,7 +19,7 @@ const COMPONENT_TYPES = {
 interface PageComponent {
   id: string;
   type: keyof typeof COMPONENT_TYPES;
-  props: any;
+  props: Record<string, any>; // Refinado para ser mais explícito
 }
 
 export default function Builder() {
@@ -42,8 +42,12 @@ export default function Builder() {
             setComponents(data.content.components);
           }
         }
-      } catch (error) {
-        console.error('Falha ao buscar dados do site:', error);
+      } catch (error: unknown) {
+        if (error instanceof Error) {
+          console.error('Falha ao buscar dados do site:', error.message);
+        } else {
+          console.error('Falha ao buscar dados do site: Erro desconhecido', error);
+        }
       }
       setIsLoading(false);
     };
@@ -70,9 +74,14 @@ export default function Builder() {
       if (res.ok) {
         alert('Site salvo com sucesso!');
       }
-    } catch (error) {
-      alert('Erro ao salvar o site.');
-      console.error('Falha ao salvar:', error);
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        alert(`Erro ao salvar o site: ${error.message}`);
+        console.error('Falha ao salvar:', error.message);
+      } else {
+        alert('Erro ao salvar o site: Erro desconhecido.');
+        console.error('Falha ao salvar: Erro desconhecido', error);
+      }
     }
   };
 

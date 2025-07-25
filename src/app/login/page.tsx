@@ -3,6 +3,7 @@
 import { signIn } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
+import Link from 'next/link';
 
 export default function Login() {
   const [email, setEmail] = useState('');
@@ -57,7 +58,7 @@ export default function Login() {
         </button>
         <p className="mt-4 text-center">
             Não tem uma conta?{' '}
-            <a href="/register" className="text-blue-500 hover:underline">Cadastre-se</a>
+            <Link href="/register" className="text-blue-500 hover:underline">Cadastre-se</Link>
         </p>
       </form>
     </div>

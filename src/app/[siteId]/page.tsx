@@ -5,6 +5,12 @@ import TextBlock from "@/components/TextBlock";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 
+interface SiteComponent {
+  id: string;
+  type: keyof typeof componentMap;
+  props: Record<string, any>; // Pode ser refinado se as props forem mais específicas
+}
+
 // Mapeia uma string de tipo de componente para o componente React real.
 const componentMap = {
   HERO: Hero,
@@ -15,7 +21,7 @@ export default function SitePreview() {
   const params = useParams();
   const siteId = params.siteId as string;
 
-  const [components, setComponents] = useState<any[]>([]);
+  const [components, setComponents] = useState<SiteComponent[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -39,8 +45,12 @@ export default function SitePreview() {
         } else {
           setComponents([]); // Site existe, mas sem componentes
         }
-      } catch (err: any) {
-        setError(err.message);
+      } catch (err: unknown) {
+        if (err instanceof Error) {
+          setError(err.message);
+        } else {
+          setError("Ocorreu um erro desconhecido.");
+        }
         console.error("Erro ao carregar site:", err);
       } finally {
         setIsLoading(false);
