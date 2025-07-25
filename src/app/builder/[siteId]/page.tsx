@@ -3,15 +3,24 @@
 import { useState, useEffect } from 'react';
 import { useParams } from 'next/navigation';
 
+interface HeroDefaultProps {
+  title: string;
+  subtitle: string;
+}
+
+interface TextBlockDefaultProps {
+  text: string;
+}
+
 // Define os tipos de componentes que o usuário pode adicionar.
 const COMPONENT_TYPES = {
   HERO: {
     name: 'Seção de Herói',
-    defaultProps: { title: 'Título Incrível', subtitle: 'Um subtítulo impactante.' },
+    defaultProps: { title: 'Título Incrível', subtitle: 'Um subtítulo impactante.' } as HeroDefaultProps,
   },
   TEXT_BLOCK: {
     name: 'Bloco de Texto',
-    defaultProps: { text: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.' },
+    defaultProps: { text: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.' } as TextBlockDefaultProps,
   },
 };
 
@@ -19,7 +28,7 @@ const COMPONENT_TYPES = {
 interface PageComponent {
   id: string;
   type: keyof typeof COMPONENT_TYPES;
-  props: Record<string, any>; // Refinado para ser mais explícito
+  props: HeroDefaultProps | TextBlockDefaultProps;
 }
 
 export default function Builder() {

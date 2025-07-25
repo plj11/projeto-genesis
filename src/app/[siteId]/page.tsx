@@ -5,10 +5,19 @@ import TextBlock from "@/components/TextBlock";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 
+interface HeroProps {
+  title: string;
+  subtitle: string;
+}
+
+interface TextBlockProps {
+  text: string;
+}
+
 interface SiteComponent {
   id: string;
   type: keyof typeof componentMap;
-  props: Record<string, any>; // Pode ser refinado se as props forem mais específicas
+  props: HeroProps | TextBlockProps;
 }
 
 // Mapeia uma string de tipo de componente para o componente React real.
