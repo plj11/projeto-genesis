@@ -84,11 +84,14 @@ export default function SitePreview() {
   return (
     <div>
       {components.map((component) => {
-        if (component.type in componentMap) {
-          const ComponentToRender = componentMap[component.type as keyof typeof componentMap];
-          return <ComponentToRender key={component.id} {...component.props} />;
+        switch (component.type) {
+          case "HERO":
+            return <Hero key={component.id} {...(component.props as HeroProps)} />;
+          case "TEXT_BLOCK":
+            return <TextBlock key={component.id} {...(component.props as TextBlockProps)} />;
+          default:
+            return null;
         }
-        return null;
       })}
     </div>
   );
