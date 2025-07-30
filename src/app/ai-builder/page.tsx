@@ -23,9 +23,12 @@ export default function AiBuilder() {
       } else {
         setAiResponse(`Error: ${res.status} ${res.statusText}`);
       }
-    } catch (error: any) {
-      setAiResponse(`Error: ${error.message}`);
-    } finally {
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        setAiResponse(`Error: ${error.message}`);
+      } else {
+        setAiResponse(`Error: An unknown error occurred`);
+      } finally {
       setIsLoading(false);
     }
   };
