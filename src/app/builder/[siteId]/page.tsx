@@ -2,6 +2,8 @@
 
 import { useState, useEffect } from 'react';
 import { useParams } from 'next/navigation';
+import Hero from '@/components/Hero';
+import TextBlock from '@/components/TextBlock';
 
 interface HeroDefaultProps {
   title: string;
@@ -73,6 +75,16 @@ export default function Builder() {
     setComponents([...components, newComponent]);
   };
 
+  const handlePropChange = (id: string, propName: string, newValue: string) => {
+    setComponents((prevComponents) =>
+      prevComponents.map((comp) =>
+        comp.id === id
+          ? { ...comp, props: { ...comp.props, [propName]: newValue } }
+          : comp
+      )
+    );
+  };
+
   const handleSave = async () => {
     try {
       const res = await fetch('/api/sites', {
@@ -132,16 +144,51 @@ export default function Builder() {
               Comece adicionando componentes pela barra lateral.
             </p>
           ) : (
-            components.map((component) => (
-              <div key={component.id} className="border p-4 rounded-md">
-                <h3 className="font-bold text-lg">
-                  {COMPONENT_TYPES[component.type].name}
-                </h3>
-                <pre className="text-sm bg-gray-200 dark:bg-gray-700 p-2 mt-2 rounded">
-                  {JSON.stringify(component.props, null, 2)}
-                </pre>
-              </div>
-            ))
+            components.map((component) => {
+              switch (component.type) {
+                case "HERO":
+                  return (
+                    <div key={component.id} className="border p-4 rounded-md">
+                      <h3 className="font-bold text-lg">Herói</h3>
+                      <input
+                        type="text"
+                        placeholder="Título"
+                        value={(component.props as HeroDefaultProps).title}
+                        onChange={(e) =>
+                          handlePropChange(component.id, "title", e.target.value)
+                        }
+                        className="w-full p-2 border rounded mb-2"
+                      />
+                      <textarea
+                        placeholder="Subtítulo"
+                        value={(component.props as HeroDefaultProps).subtitle}
+                        onChange={(e) =>
+                          handlePropChange(component.id, "subtitle", e.target.value)
+                        }
+                        className="w-full p-2 border rounded"
+                      />
+                      <Hero {...(component.props as HeroDefaultProps)} />
+                    </div>
+                  );
+                case "TEXT_BLOCK":
+                  return (
+                    <div key={component.id} className="border p-4 rounded-md">
+                      <h3 className="font-bold text-lg">Bloco de Texto</h3>
+                      <textarea
+                        placeholder="Texto"
+                        value={(component.props as TextBlockDefaultProps).text}
+                        onChange={(e) =>
+                          handlePropChange(component.id, "text", e.target.value)
+                        }
+                        className="w-full p-2 border rounded"
+                      />
+                      <TextBlock {...(component.props as TextBlockDefaultProps)} />
+                    </div>
+                  );
+                default:
+                  return null;
+              }
+            })
           )}
         </div>
       </main>
