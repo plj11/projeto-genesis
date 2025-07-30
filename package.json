@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "VERCEL_DATABASE_URL=$VERCEL_DATABASE_URL npx prisma migrate deploy && VERCEL_DATABASE_URL=$VERCEL_DATABASE_URL prisma generate && next build",
+    "build": "npx prisma migrate deploy && prisma generate && next build",
     "start": "next start",
     "lint": "next lint"
   },
