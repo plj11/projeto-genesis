@@ -28,7 +28,8 @@ export default function AiBuilder() {
         setAiResponse(`Error: ${error.message}`);
       } else {
         setAiResponse(`Error: An unknown error occurred`);
-      } finally {
+      }
+    } finally {
       setIsLoading(false);
     }
   };
