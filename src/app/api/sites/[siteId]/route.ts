@@ -10,7 +10,7 @@ export async function POST(req: NextRequest, context: { params: { siteId: string
     return NextResponse.json({ error: 'Não autorizado' }, { status: 401 });
   }
 
-  const { siteId } = params;
+  
   const { component } = await req.json();
 
   try {
