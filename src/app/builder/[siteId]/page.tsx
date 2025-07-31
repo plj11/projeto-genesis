@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useParams } from 'next/navigation';
+import Link from 'next/link';
 import Hero from '@/components/Hero';
 import TextBlock from '@/components/TextBlock';
 
@@ -110,6 +110,9 @@ export default function Builder() {
     <div className="flex h-screen bg-gray-100 dark:bg-gray-900">
       <aside className="w-72 bg-white dark:bg-gray-800 p-4 shadow-md flex flex-col">
         <h2 className="text-xl font-bold mb-4">Componentes</h2>
+        <Link href={`/ai-builder/${siteId}`}>
+          <a className="mb-2 w-full bg-blue-500 text-white p-2 rounded hover:bg-blue-600 text-center block">Criar com IA</a>
+        </Link>
         <div className="space-y-2">
           <button
             onClick={() => addComponent('HERO')}

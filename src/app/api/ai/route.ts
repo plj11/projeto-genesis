@@ -12,9 +12,9 @@ export async function POST(request: Request) {
   }
 
   try {
-    const model = genAI.getGenerativeModel({ model: "gemini-pro" });
+    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
-    const instruction = `Você é um assistente de IA que gera JSON para componentes de site. Dada uma descrição, gere um objeto JSON que represente as propriedades de um componente Hero ou TextBlock. Se a descrição for para um Hero, o JSON deve ter 'title' e 'subtitle'. Se for para um TextBlock, o JSON deve ter 'text'. Não inclua nenhum texto adicional, apenas o JSON.`;
+    const instruction = `Você é um assistente de IA que gera JSON para componentes de site. Dada uma descrição, gere um objeto JSON que represente as propriedades de um componente Hero ou TextBlock. O JSON deve ter uma propriedade 'type' que seja 'HERO' ou 'TEXT_BLOCK'. Se a descrição for para um Hero, o JSON deve ter 'title' e 'subtitle'. Se for para um TextBlock, o JSON deve ter 'text'. Não inclua nenhum texto adicional, apenas o JSON.`;
 
     const fullPrompt = `${instruction}\n\nDescrição: ${prompt}\n\nJSON:`;
 

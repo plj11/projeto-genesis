@@ -3,6 +3,8 @@
 import { useState } from 'react';
 
 export default function AiBuilder() {
+  const params = useParams();
+  const siteId = params.siteId as string;
   const [prompt, setPrompt] = useState('');
   const [aiResponse, setAiResponse] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -31,6 +33,28 @@ export default function AiBuilder() {
       }
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  const handleAddComponent = async () => {
+    if (!newComponent) return;
+
+    try {
+      const res = await fetch(`/api/sites/${siteId}`,
+        {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ component: newComponent }),
+        }
+      );
+
+      if (res.ok) {
+        window.location.href = `/builder/${siteId}`;
+      } else {
+        alert('Erro ao adicionar componente');
+      }
+    } catch (error) {
+      alert('Erro ao adicionar componente');
     }
   };
 
@@ -64,6 +88,12 @@ export default function AiBuilder() {
             <pre className="whitespace-pre-wrap text-gray-700 dark:text-gray-300">
               {aiResponse}
             </pre>
+            <button
+              onClick={handleAddComponent}
+              className="mt-4 w-full bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-lg shadow-md"
+            >
+              Adicionar ao Site
+            </button>
           </div>
         )}
       </main>
