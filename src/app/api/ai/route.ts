@@ -23,7 +23,7 @@ export async function POST(request: Request) {
     const text = response.text();
 
     return NextResponse.json({ response: text });
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Error calling Gemini API:', error);
     return NextResponse.json({ error: 'Failed to generate content from AI.' }, { status: 500 });
   }
