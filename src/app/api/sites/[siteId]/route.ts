@@ -3,7 +3,8 @@ import prisma from '@/lib/prisma';
 import { getServerSession } from 'next-auth/next';
 import { authOptions } from '@/lib/auth';
 
-export async function POST(req: NextRequest, { params }: { params: { siteId: string } }) {
+export async function POST(req: NextRequest, context: { params: { siteId: string } }) {
+  const { siteId } = context.params;
   const session = await getServerSession(authOptions);
   if (!session || !session.user) {
     return NextResponse.json({ error: 'Não autorizado' }, { status: 401 });
