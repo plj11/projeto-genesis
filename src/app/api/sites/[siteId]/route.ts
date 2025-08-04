@@ -4,7 +4,7 @@ import { getServerSession } from 'next-auth/next';
 import { authOptions } from '@/lib/auth';
 
 export async function POST(req: NextRequest, context: any) {
-  const siteId = context.params.siteId;
+  const siteId = params.siteId;
   const session = await getServerSession(authOptions);
   if (!session || !session.user) {
     return NextResponse.json({ error: 'Não autorizado' }, { status: 401 });
