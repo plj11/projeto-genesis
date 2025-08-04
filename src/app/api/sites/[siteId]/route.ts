@@ -3,7 +3,13 @@ import prisma from '@/lib/prisma';
 import { getServerSession } from 'next-auth/next';
 import { authOptions } from '@/lib/auth';
 
-export async function POST(req: NextRequest, context: { params: { siteId: string } }) {
+interface RouteContext {
+  params: {
+    siteId: string;
+  };
+}
+
+export async function POST(req: NextRequest, context: RouteContext) {
   const siteId = context.params.siteId;
   const session = await getServerSession(authOptions);
   if (!session || !session.user) {
