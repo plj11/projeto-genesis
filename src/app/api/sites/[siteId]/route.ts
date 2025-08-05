@@ -10,7 +10,7 @@ interface RouteContext {
 }
 
 export async function POST(req: NextRequest, context: RouteContext) {
-  const siteId = context.params.siteId;
+  const { siteId } = params;
   const session = await getServerSession(authOptions);
   if (!session || !session.user) {
     return NextResponse.json({ error: 'Não autorizado' }, { status: 401 });
