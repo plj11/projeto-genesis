@@ -1,3 +1,4 @@
+
 Plano de Projeto e Escopo Consolidado: Projeto Gênesis
   Parte 1: Resumo Executivo e Visão Estratégica
    * Nome do Projeto: Projeto Gênesis
@@ -202,3 +203,24 @@ q53jB30SWRGpt/eaOb6R6UWgq+XMklOzCOPj5L+mYP4=
     *   **Status:** Pendente (aguardando sua ação manual).
 *   **Resultado do Dia:** Uma página "Em breve" está no ar em uma URL pública (ex: genesis-poc.vercel.app). O pipeline de deploy está funcionando.
     *   **Status:** Pendente (aguardando sua ação manual). Erros de ESLint e TypeScript abordados no commit `8a4bb5c`.
+
+---
+
+### **Dogma da Qualidade: Testes End-to-End**
+
+**Filosofia:**
+O Projeto Gênesis adota uma cultura de qualidade proativa. Os testes End-to-End (E2E) não são uma etapa final, mas um pilar contínuo do desenvolvimento. Nosso objetivo é simular os fluxos de usuário mais críticos de forma automatizada para garantir a estabilidade, performance e consistência da plataforma a cada nova alteração no código.
+
+**Tecnologia:**
+*   **Framework:** Playwright (https://playwright.dev/)
+*   **Motivo:** Escolhido por sua robustez, velocidade, capacidade de teste cross-browser e ferramentas de depuração inteligentes como o Trace Viewer.
+
+**Execução dos Testes:**
+*   **Localmente:** Para executar a suíte de testes completa em seu ambiente de desenvolvimento, utilize o comando:
+    ```bash
+    npm run test:e2e
+    ```
+*   **Automação (CI/CD):** Os testes são executados automaticamente em nosso pipeline de Integração Contínua (CI) através do GitHub Actions (`.github/workflows/playwright.yml`). Nenhum código que quebre os testes existentes será integrado à branch principal.
+
+**Política de Cobertura:**
+Nenhuma nova funcionalidade crítica será considerada completa sem a devida cobertura de um teste E2E. Cada novo fluxo de usuário significativo deve ser acompanhado por um novo arquivo de teste que valide seu funcionamento de ponta a ponta.
