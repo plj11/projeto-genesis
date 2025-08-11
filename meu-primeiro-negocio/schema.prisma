@@ -60,3 +60,9 @@ model VerificationToken {
 
   @@unique([identifier, token])
 }
+
+model Post {
+  title String
+  content String
+  published Boolean
+}
