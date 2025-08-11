@@ -1,102 +1,99 @@
 'use client';
 
 import { useState } from 'react';
+import { useParams, useRouter } from 'next/navigation';
+import Link from 'next/link';
 
-export default function AiBuilder() {
+export default function AIBuilder() {
   const params = useParams();
+  const router = useRouter();
   const siteId = params.siteId as string;
-  const [prompt, setPrompt] = useState('');
-  const [aiResponse, setAiResponse] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
 
-  const handleSubmit = async () => {
+  const [prompt, setPrompt] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const handleGenerate = async () => {
+    if (!prompt) {
+      setError('Por favor, descreva o site que você deseja criar.');
+      return;
+    }
+
     setIsLoading(true);
-    setAiResponse('');
+    setError(null);
+
     try {
       const res = await fetch('/api/ai', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ prompt }),
+        body: JSON.stringify({ prompt, siteId }),
       });
 
-      if (res.ok) {
-        const data = await res.json();
-        setAiResponse(data.response);
-      } else {
-        setAiResponse(`Error: ${res.status} ${res.statusText}`);
+      if (!res.ok) {
+        const errorData = await res.json();
+        throw new Error(errorData.error || 'Falha ao gerar o conteúdo.');
       }
-    } catch (error: unknown) {
-      if (error instanceof Error) {
-        setAiResponse(`Error: ${error.message}`);
-      } else {
-        setAiResponse(`Error: An unknown error occurred`);
-      }
+
+      // Se a geração for bem-sucedida, redireciona para o construtor
+      router.push(`/builder/${siteId}`);
+
+    } catch (err: unknown) {
+      const errorMessage = err instanceof Error ? err.message : 'Ocorreu um erro desconhecido.';
+      setError(errorMessage);
+      console.error(err);
     } finally {
       setIsLoading(false);
     }
   };
 
-  const handleAddComponent = async () => {
-    if (!newComponent) return;
-
-    try {
-      const res = await fetch(`/api/sites/${siteId}`,
-        {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ component: newComponent }),
-        }
-      );
-
-      if (res.ok) {
-        window.location.href = `/builder/${siteId}`;
-      } else {
-        alert('Erro ao adicionar componente');
-      }
-    } catch (error) {
-      alert('Erro ao adicionar componente');
-    }
-  };
-
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen py-2 bg-gray-100 dark:bg-gray-900">
-      <main className="flex flex-col items-center justify-center w-full flex-1 px-20 text-center">
-        <h1 className="text-4xl font-bold mb-6 text-gray-800 dark:text-gray-100">
-          Gênesis AI Builder
-        </h1>
+    <div className="flex flex-col items-center justify-center min-h-screen bg-gray-50 dark:bg-gray-900 p-4">
+      <div className="w-full max-w-2xl mx-auto">
+        <div className="bg-white dark:bg-gray-800 shadow-2xl rounded-2xl p-8 md:p-12">
+          <Link href={`/builder/${siteId}`} className="text-blue-500 hover:underline mb-6 block">
+            &larr; Voltar para o Construtor
+          </Link>
+          <h1 className="text-4xl md:text-5xl font-bold text-gray-800 dark:text-white mb-4 text-center">
+            Criar com Inteligência Artificial
+          </h1>
+          <p className="text-gray-600 dark:text-gray-300 mb-8 text-center text-lg">
+            Descreva o site que você imagina, e nossa IA irá gerar uma primeira versão para você.
+          </p>
 
-        <div className="w-full max-w-md">
-          <textarea
-            className="w-full p-4 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-100"
-            rows={5}
-            placeholder="Digite seu prompt aqui (ex: Crie uma seção de herói com o título 'Bem-vindo' e subtítulo 'Sua plataforma')..."
-            value={prompt}
-            onChange={(e) => setPrompt(e.target.value)}
-          ></textarea>
-          <button
-            onClick={handleSubmit}
-            disabled={isLoading}
-            className="mt-4 w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-lg shadow-md disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            {isLoading ? 'Gerando...' : 'Gerar com IA'}
-          </button>
-        </div>
-
-        {aiResponse && (
-          <div className="mt-8 w-full max-w-md p-6 bg-white dark:bg-gray-800 rounded-lg shadow-lg text-left">
-            <h2 className="text-xl font-bold mb-4 text-gray-800 dark:text-gray-100">Resposta da IA:</h2>
-            <pre className="whitespace-pre-wrap text-gray-700 dark:text-gray-300">
-              {aiResponse}
-            </pre>
+          <div className="space-y-6">
+            <textarea
+              value={prompt}
+              onChange={(e) => setPrompt(e.target.value)}
+              placeholder='Ex: "Crie um site para uma cafeteria chamada Café Aconchego. Inclua um título, uma breve descrição sobre nossos grãos especiais e uma seção com três dos nossos produtos principais."'
+              className="w-full h-40 p-4 bg-gray-100 dark:bg-gray-700 border-2 border-gray-200 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-shadow duration-300 ease-in-out shadow-inner resize-none text-base"
+            />
             <button
-              onClick={handleAddComponent}
-              className="mt-4 w-full bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-lg shadow-md"
+              onClick={handleGenerate}
+              disabled={isLoading}
+              className="w-full bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 text-white font-bold py-4 px-4 rounded-lg shadow-lg transform hover:scale-105 transition-all duration-300 ease-in-out disabled:opacity-50 disabled:cursor-not-allowed disabled:scale-100"
             >
-              Adicionar ao Site
+              {isLoading ? (
+                <div className="flex items-center justify-center">
+                  <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                  </svg>
+                  Gerando...
+                </div>
+              ) : 'Gerar Site Mágico'}
             </button>
           </div>
-        )}
-      </main>
+
+          {error && (
+            <p className="text-red-500 mt-6 text-center bg-red-100 dark:bg-red-900/20 p-3 rounded-lg">
+              {error}
+            </p>
+          )}
+        </div>
+        <p className="text-center text-xs text-gray-500 mt-6">
+          Dica: Seja o mais descritivo possível para obter melhores resultados.
+        </p>
+      </div>
     </div>
   );
 }

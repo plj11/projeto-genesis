@@ -43,8 +43,11 @@ export default async function Dashboard() {
                     <Link href={`/${site.id}`} target="_blank" className="text-blue-500 hover:underline">
                       Ver Site
                     </Link>
-                    <Link href={`/builder/${site.id}`} className="bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold py-2 px-4 rounded">
+                    <Link href={`/editor/${site.id}`} className="bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold py-2 px-4 rounded">
                       Editar
+                    </Link>
+                    <Link href={`/dashboard/${site.id}/settings`} className="bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold py-2 px-4 rounded">
+                      Configurações
                     </Link>
                   </div>
                 </li>

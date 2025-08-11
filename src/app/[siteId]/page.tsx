@@ -2,6 +2,7 @@
 
 import Hero from "@/components/Hero";
 import TextBlock from "@/components/TextBlock";
+import Pricing from "@/components/Pricing"; // Importar o componente Pricing
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 
@@ -14,16 +15,21 @@ interface TextBlockProps {
   text: string;
 }
 
+interface PricingProps {
+  plans: any[];
+}
+
 interface SiteComponent {
   id: string;
-  type: keyof typeof componentMap;
-  props: HeroProps | TextBlockProps;
+  type: 'HERO' | 'TEXT_BLOCK' | 'PRICING'; // Adicionar PRICING ao tipo
+  props: HeroProps | TextBlockProps | PricingProps;
 }
 
 // Mapeia uma string de tipo de componente para o componente React real.
 const componentMap = {
   HERO: Hero,
   TEXT_BLOCK: TextBlock,
+  PRICING: Pricing, // Adicionar Pricing ao mapa
 };
 
 export default function SitePreview() {
@@ -89,6 +95,8 @@ export default function SitePreview() {
             return <Hero key={component.id} {...(component.props as HeroProps)} />;
           case "TEXT_BLOCK":
             return <TextBlock key={component.id} {...(component.props as TextBlockProps)} />;
+          case "PRICING":
+            return <Pricing key={component.id} {...(component.props as PricingProps)} />;
           default:
             return null;
         }

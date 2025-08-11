@@ -1,13 +1,15 @@
-import { getServerSession } from "next-auth/next";
-import { authOptions } from "@/lib/auth";
-import { redirect } from "next/navigation";
+import Features from "@/components/Features";
+import Hero from "@/components/Hero";
 
-export default async function Home() {
-  const session = await getServerSession(authOptions);
-
-  if (session) {
-    redirect("/dashboard");
-  } else {
-    redirect("/login");
-  }
+export default function Home() {
+  return (
+    <main className="flex-1">
+      <Hero
+        title="Crie seu site com facilidade"
+        subtitle="Uma plataforma de criação de sites intuitiva e poderosa para todos."
+        showCtaButtons={true}
+      />
+      <Features />
+    </main>
+  );
 }

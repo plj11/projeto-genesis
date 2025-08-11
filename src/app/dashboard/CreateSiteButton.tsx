@@ -10,17 +10,19 @@ export function CreateSiteButton() {
   const handleClick = async () => {
     setIsLoading(true);
     try {
+      const requestBody = JSON.stringify({ content: null });
+      console.log('Corpo da requisição de criação de site:', requestBody);
       const res = await fetch('/api/sites', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ content: { components: [] } }), // Cria um site vazio
+        body: requestBody,
       });
 
       if (res.ok) {
         const site = await res.json();
-        router.push(`/builder/${site.id}`);
+        router.push(`/editor/${site.id}`);
       } else {
         alert('Falha ao criar o site.');
       }
