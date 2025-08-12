@@ -63,7 +63,6 @@ program
     console.log(chalk.cyan.bold('\n🤖 Copiloto Gênesis: Adicionar Modelo'));
     console.log(`   - Nome do Modelo: ${chalk.green(modelName)}`);
 
-    // Caminho corrigido para schema.prisma
     const schemaPath = path.join(process.cwd(), 'schema.prisma');
 
     if (!fs.existsSync(schemaPath)) {
@@ -100,6 +99,62 @@ program
 
     } catch (error) {
       console.error(chalk.red('\nOcorreu um erro ao adicionar o modelo:'), error);
+      process.exit(1);
+    }
+  });
+
+program
+  .command('add:api <modelName>')
+  .description('Gera rotas de API (CRUD) para um modelo específico.')
+  .action((modelName: string) => {
+    console.log(chalk.cyan.bold('\n🤖 Copiloto Gênesis: Gerar API'));
+    console.log(`   - Modelo: ${chalk.green(modelName)}`);
+
+    const projectRoot = process.cwd();
+    const apiPath = path.join(projectRoot, 'app', 'api', `${modelName.toLowerCase()}s`);
+    const apiIdPath = path.join(apiPath, '[id]');
+
+    const capitalizedModelName = modelName.charAt(0).toUpperCase() + modelName.slice(1);
+    const pluralModelName = modelName.toLowerCase() + 's'; // Simple pluralization
+
+    const templatePath = path.join(__dirname, '..', 'src', 'templates', 'api');
+
+    try {
+      // Criação das pastas
+      console.log(`\n1. Criando diretório de API em ${chalk.cyan(apiPath)}`);
+      fs.mkdirSync(apiPath, { recursive: true });
+      fs.mkdirSync(apiIdPath, { recursive: true });
+
+      // Leitura e processamento dos templates
+      let listCreateContent = fs.readFileSync(path.join(templatePath, 'route-list-create.ts.tpl'), 'utf-8');
+      let detailContent = fs.readFileSync(path.join(templatePath, 'route-detail.ts.tpl'), 'utf-8');
+
+      // Substituição dos placeholders
+      listCreateContent = listCreateContent
+        .replace(/{{modelNameLower}}/g, modelName.toLowerCase())
+        .replace(/{{pluralModelName}}/g, pluralModelName)
+        .replace(/{{capitalizedModelName}}/g, capitalizedModelName);
+
+      detailContent = detailContent
+        .replace(/{{modelNameLower}}/g, modelName.toLowerCase())
+        .replace(/{{pluralModelName}}/g, pluralModelName)
+        .replace(/{{capitalizedModelName}}/g, capitalizedModelName);
+
+      // Criação dos arquivos de rota
+      console.log(`2. Gerando ${chalk.yellow(`app/api/${pluralModelName}/route.ts`)}`);
+      fs.writeFileSync(path.join(apiPath, 'route.ts'), listCreateContent);
+
+      console.log(`3. Gerando ${chalk.yellow(`app/api/${pluralModelName}/[id]/route.ts`)}`);
+      fs.writeFileSync(path.join(apiIdPath, 'route.ts'), detailContent);
+
+      console.log(chalk.green.bold(`\n✅ Rotas de API para o modelo ${modelName} geradas com sucesso!`));
+      console.log(chalk.cyan.bold('\nPróximos passos:'));
+      console.log(`   1. Verifique os arquivos gerados em ${chalk.yellow(`app/api/${pluralModelName}`)}`);
+      console.log(`   2. Descomente as linhas de autenticação se necessário.`);
+      console.log(`   3. Execute ${chalk.yellow('npm run dev')} para testar suas novas APIs.`);
+
+    } catch (error) {
+      console.error(chalk.red('\nOcorreu um erro ao gerar as APIs:'), error);
       process.exit(1);
     }
   });
