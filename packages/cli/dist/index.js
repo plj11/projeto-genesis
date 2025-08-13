@@ -4,7 +4,7 @@ import chalk from 'chalk';
 import path from 'path';
 import fs from 'fs';
 import { fileURLToPath } from 'url';
-import { writeAndVerifyFile } from './utils.js'; // Importa a nova função auxiliar
+import { writeAndVerifyFile } from './utils.js';
 import pkg from '../package.json' with { type: 'json' };
 // Helper para obter o caminho do diretório em ES Modules
 const __filename = fileURLToPath(import.meta.url);
@@ -14,45 +14,12 @@ program
     .name('genesis')
     .version(pkg.version)
     .description('Gênesis CLI - Sua plataforma de engenharia de software automatizada.');
-// --- COMANDOS DE GERAÇÃO ---
-program
-    .command('new <project-name>')
-    .alias('n')
-    .description('Cria um novo projeto a partir de um arquétipo Gênesis.')
-    .action((projectName) => {
-    console.log(chalk.green.bold(`\n🚀 Iniciando a criação do projeto: ${projectName}...`));
-    const projectPath = path.join(process.cwd(), projectName);
-    const archetypePath = path.join(__dirname, '..', 'src', 'archetypes', 'saas-b2b');
-    if (fs.existsSync(projectPath)) {
-        console.error(chalk.red(`\nErro: O diretório ${projectName} já existe.`));
-        process.exit(1);
-    }
-    try {
-        console.log(`\n1. Criando diretório em ${chalk.cyan(projectPath)}`);
-        fs.mkdirSync(projectPath, { recursive: true });
-        console.log(`2. Copiando arquivos do arquétipo...`);
-        fs.cpSync(archetypePath, projectPath, { recursive: true });
-        console.log(chalk.green.bold(`\n✅ Projeto ${projectName} criado com sucesso!`));
-        console.log(chalk.cyan.bold('\nPróximos passos:'));
-        console.log(`   1. Acesse o diretório do projeto: ${chalk.yellow(`cd ${projectName}`)}`);
-        console.log(`   2. Instale as dependências: ${chalk.yellow('npm install')}`);
-        console.log(`   3. Configure suas variáveis de ambiente no arquivo ${chalk.yellow('.env')}`);
-        console.log(`   4. Execute o projeto: ${chalk.yellow('npm run dev')}`);
-    }
-    catch (error) {
-        console.error(chalk.red('\nOcorreu um erro durante a criação do projeto:'), error);
-        process.exit(1);
-    }
-});
-// --- COMANDOS DO COPILOTO ---
-program
-    .command('add:model <modelName>')
-    .description('Adiciona um novo modelo de dados ao schema.prisma.')
-    .option('-f, --fields <fields>', 'Campos do modelo no formato "nome:tipo, nome2:tipo2"')
-    .action((modelName, options) => {
+// --- FUNÇÕES AUXILIARES PARA GERAÇÃO DE CÓDIGO ---
+// Função para adicionar modelo ao schema.prisma
+async function addModelLogic(modelName, options, projectRoot) {
     console.log(chalk.cyan.bold('\n🤖 Copiloto Gênesis: Adicionar Modelo'));
     console.log(`   - Nome do Modelo: ${chalk.green(modelName)}`);
-    const schemaPath = path.join(process.cwd(), 'schema.prisma');
+    const schemaPath = path.join(projectRoot, 'schema.prisma');
     if (!fs.existsSync(schemaPath)) {
         console.error(chalk.red(`\nErro: schema.prisma não encontrado em ${schemaPath}. Certifique-se de estar no diretório raiz do seu projeto.`));
         process.exit(1);
@@ -84,17 +51,14 @@ program
         console.log(`   1. Execute ${chalk.yellow('npx prisma migrate dev')} para aplicar as mudanças no banco de dados.`);
     }
     catch (error) {
-        console.error(chalk.red('\nOcorreu um erro ao adicionar o modelo:'), error);
+        console.error(chalk.red('\nOcorreu um erro ao adicionar o modelo:'), error.message, error);
         process.exit(1);
     }
-});
-program
-    .command('add:api <modelName>')
-    .description('Gera rotas de API (CRUD) para um modelo específico.')
-    .action((modelName) => {
+}
+// Função para gerar rotas de API
+async function addApiLogic(modelName, projectRoot) {
     console.log(chalk.cyan.bold('\n🤖 Copiloto Gênesis: Gerar API'));
     console.log(`   - Modelo: ${chalk.green(modelName)}`);
-    const projectRoot = process.cwd();
     const apiPath = path.join(projectRoot, 'app', 'api', `${modelName.toLowerCase()}s`);
     const apiIdPath = path.join(apiPath, '[id]');
     const capitalizedModelName = modelName.charAt(0).toUpperCase() + modelName.slice(1);
@@ -136,14 +100,11 @@ program
         console.error(chalk.red('\nOcorreu um erro ao gerar as APIs:'), error.message, error);
         process.exit(1);
     }
-});
-program
-    .command('add:page <modelName>')
-    .description('Gera páginas de UI (listagem e detalhe) para um modelo específico.')
-    .action((modelName) => {
+}
+// Função para gerar páginas de UI
+async function addPageLogic(modelName, projectRoot) {
     console.log(chalk.cyan.bold('\n🤖 Copiloto Gênesis: Gerar Páginas'));
     console.log(`   - Modelo: ${chalk.green(modelName)}`);
-    const projectRoot = process.cwd();
     const pagePath = path.join(projectRoot, 'app', `${modelName.toLowerCase()}s`);
     const detailPagePath = path.join(pagePath, '[id]');
     const capitalizedModelName = modelName.charAt(0).toUpperCase() + modelName.slice(1);
@@ -182,6 +143,83 @@ program
     }
     catch (error) {
         console.error(chalk.red('\nOcorreu um erro ao gerar as páginas:'), error.message, error);
+        process.exit(1);
+    }
+}
+// --- COMANDOS DA CLI ---
+program
+    .command('new <project-name>')
+    .alias('n')
+    .description('Cria um novo projeto a partir de um arquétipo Gênesis.')
+    .action((projectName) => {
+    console.log(chalk.green.bold(`\n🚀 Iniciando a criação do projeto: ${projectName}...`));
+    const projectPath = path.join(process.cwd(), projectName);
+    const archetypePath = path.join(__dirname, '..', 'src', 'archetypes', 'saas-b2b');
+    if (fs.existsSync(projectPath)) {
+        console.error(chalk.red(`\nErro: O diretório ${projectName} já existe.`));
+        process.exit(1);
+    }
+    try {
+        console.log(`\n1. Criando diretório em ${chalk.cyan(projectPath)}`);
+        fs.mkdirSync(projectPath, { recursive: true });
+        console.log(`2. Copiando arquivos do arquétipo...`);
+        fs.cpSync(archetypePath, projectPath, { recursive: true });
+        console.log(chalk.green.bold(`\n✅ Projeto ${projectName} criado com sucesso!`));
+        console.log(chalk.cyan.bold('\nPróximos passos:'));
+        console.log(`   1. Acesse o diretório do projeto: ${chalk.yellow(`cd ${projectName}`)}`);
+        console.log(`   2. Instale as dependências: ${chalk.yellow('npm install')}`);
+        console.log(`   3. Configure suas variáveis de ambiente no arquivo ${chalk.yellow('.env')}`);
+        console.log(`   4. Execute o projeto: ${chalk.yellow('npm run dev')}`);
+    }
+    catch (error) {
+        console.error(chalk.red('\nOcorreu um erro durante a criação do projeto:'), error);
+        process.exit(1);
+    }
+});
+program
+    .command('add:model <modelName>')
+    .description('Adiciona um novo modelo de dados ao schema.prisma.')
+    .option('-f, --fields <fields>', 'Campos do modelo no formato "nome:tipo, nome2:tipo2"')
+    .action(async (modelName, options) => {
+    await addModelLogic(modelName, options, process.cwd());
+});
+program
+    .command('add:api <modelName>')
+    .description('Gera rotas de API (CRUD) para um modelo específico.')
+    .action(async (modelName) => {
+    await addApiLogic(modelName, process.cwd());
+});
+program
+    .command('add:page <modelName>')
+    .description('Gera páginas de UI (listagem e detalhe) para um modelo específico.')
+    .action(async (modelName) => {
+    await addPageLogic(modelName, process.cwd());
+});
+program
+    .command('add:feature <featureName>')
+    .description('Gera uma funcionalidade completa (modelo, API e páginas de UI) para um novo recurso.')
+    .option('-f, --fields <fields>', 'Campos do modelo no formato "nome:tipo, nome2:tipo2"')
+    .action(async (featureName, options) => {
+    console.log(chalk.cyan.bold(`\n🤖 Copiloto Gênesis: Gerar Funcionalidade Completa: ${featureName}`));
+    const projectRoot = process.cwd();
+    try {
+        // 1. Adicionar Modelo
+        console.log(chalk.blue(`\n--- Adicionando Modelo ${featureName} ---`));
+        await addModelLogic(featureName, options, projectRoot);
+        // 2. Gerar APIs
+        console.log(chalk.blue(`\n--- Gerando APIs para ${featureName} ---`));
+        await addApiLogic(featureName, projectRoot);
+        // 3. Gerar Páginas
+        console.log(chalk.blue(`\n--- Gerando Páginas para ${featureName} ---`));
+        await addPageLogic(featureName, projectRoot);
+        console.log(chalk.green.bold(`\n✅ Funcionalidade ${featureName} gerada com sucesso!`));
+        console.log(chalk.cyan.bold('\nPróximos passos:'));
+        console.log(`   1. Execute ${chalk.yellow('npx prisma migrate dev')} para aplicar as mudanças no banco de dados.`);
+        console.log(`   2. Verifique os arquivos gerados em ${chalk.yellow(`app/api/${featureName.toLowerCase()}s`)} e ${chalk.yellow(`app/${featureName.toLowerCase()}s`)}.`);
+        console.log(`   3. Execute ${chalk.yellow('npm run dev')} para testar sua nova funcionalidade.`);
+    }
+    catch (error) {
+        console.error(chalk.red('\nOcorreu um erro ao gerar a funcionalidade:'), error.message, error);
         process.exit(1);
     }
 });
