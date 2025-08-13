@@ -72,3 +72,9 @@ model Order {
   status String
   userId String
 }
+
+model Order {
+  amount Float
+  status String
+  userId String
+}
