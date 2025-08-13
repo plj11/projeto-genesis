@@ -4,6 +4,7 @@ import chalk from 'chalk';
 import path from 'path';
 import fs from 'fs';
 import { fileURLToPath } from 'url';
+import { writeAndVerifyFile } from './utils.js'; // Importa a nova função auxiliar
 import pkg from '../package.json' with { type: 'json' };
 // Helper para obter o caminho do diretório em ES Modules
 const __filename = fileURLToPath(import.meta.url);
@@ -74,7 +75,10 @@ program
         }
         const newModel = `\nmodel ${modelName} {\n${modelFields}\n}\n`;
         schemaContent += newModel;
-        fs.writeFileSync(schemaPath, schemaContent);
+        if (!writeAndVerifyFile(schemaPath, schemaContent)) {
+            console.error(chalk.red(`\nFalha ao adicionar o modelo ${modelName} ao schema.prisma.`));
+            process.exit(1);
+        }
         console.log(chalk.green.bold(`\n✅ Modelo ${modelName} adicionado com sucesso ao schema.prisma!`));
         console.log(chalk.cyan.bold('\nPróximos passos:'));
         console.log(`   1. Execute ${chalk.yellow('npx prisma migrate dev')} para aplicar as mudanças no banco de dados.`);
@@ -114,10 +118,14 @@ program
             .replace(/{{pluralModelName}}/g, pluralModelName)
             .replace(/{{capitalizedModelName}}/g, capitalizedModelName);
         // Criação dos arquivos de rota
-        console.log(`2. Gerando ${chalk.yellow(`app/api/${pluralModelName}/route.ts`)}`);
-        fs.writeFileSync(path.join(apiPath, 'route.ts'), listCreateContent);
-        console.log(`3. Gerando ${chalk.yellow(`app/api/${pluralModelName}/[id]/route.ts`)}`);
-        fs.writeFileSync(path.join(apiIdPath, 'route.ts'), detailContent);
+        if (!writeAndVerifyFile(path.join(apiPath, 'route.ts'), listCreateContent)) {
+            console.error(chalk.red(`\nFalha ao gerar ${pluralModelName}/route.ts.`));
+            process.exit(1);
+        }
+        if (!writeAndVerifyFile(path.join(apiIdPath, 'route.ts'), detailContent)) {
+            console.error(chalk.red(`\nFalha ao gerar ${pluralModelName}/[id]/route.ts.`));
+            process.exit(1);
+        }
         console.log(chalk.green.bold(`\n✅ Rotas de API para o modelo ${modelName} geradas com sucesso!`));
         console.log(chalk.cyan.bold('\nPróximos passos:'));
         console.log(`   1. Verifique os arquivos gerados em ${chalk.yellow(`app/api/${pluralModelName}`)}`);
@@ -125,7 +133,55 @@ program
         console.log(`   3. Execute ${chalk.yellow('npm run dev')} para testar suas novas APIs.`);
     }
     catch (error) {
-        console.error(chalk.red('\nOcorreu um erro ao gerar as APIs:'), error);
+        console.error(chalk.red('\nOcorreu um erro ao gerar as APIs:'), error.message, error);
+        process.exit(1);
+    }
+});
+program
+    .command('add:page <modelName>')
+    .description('Gera páginas de UI (listagem e detalhe) para um modelo específico.')
+    .action((modelName) => {
+    console.log(chalk.cyan.bold('\n🤖 Copiloto Gênesis: Gerar Páginas'));
+    console.log(`   - Modelo: ${chalk.green(modelName)}`);
+    const projectRoot = process.cwd();
+    const pagePath = path.join(projectRoot, 'app', `${modelName.toLowerCase()}s`);
+    const detailPagePath = path.join(pagePath, '[id]');
+    const capitalizedModelName = modelName.charAt(0).toUpperCase() + modelName.slice(1);
+    const pluralModelName = modelName.toLowerCase() + 's'; // Simple pluralization
+    const templatePath = path.join(__dirname, '..', 'src', 'templates', 'pages');
+    try {
+        // Criação das pastas
+        console.log(`\n1. Criando diretório de páginas em ${chalk.cyan(pagePath)}`);
+        fs.mkdirSync(pagePath, { recursive: true });
+        fs.mkdirSync(detailPagePath, { recursive: true });
+        // Leitura e processamento dos templates
+        let listPageContent = fs.readFileSync(path.join(templatePath, 'list-page.tsx.tpl'), 'utf-8');
+        let detailPageContent = fs.readFileSync(path.join(templatePath, 'detail-page.tsx.tpl'), 'utf-8');
+        // Substituição dos placeholders
+        listPageContent = listPageContent
+            .replace(/{{modelNameLower}}/g, modelName.toLowerCase())
+            .replace(/{{pluralModelName}}/g, pluralModelName)
+            .replace(/{{capitalizedModelName}}/g, capitalizedModelName);
+        detailPageContent = detailPageContent
+            .replace(/{{modelNameLower}}/g, modelName.toLowerCase())
+            .replace(/{{pluralModelName}}/g, pluralModelName)
+            .replace(/{{capitalizedModelName}}/g, capitalizedModelName);
+        // Criação dos arquivos de página
+        if (!writeAndVerifyFile(path.join(pagePath, 'page.tsx'), listPageContent)) {
+            console.error(chalk.red(`\nFalha ao gerar ${pluralModelName}/page.tsx.`));
+            process.exit(1);
+        }
+        if (!writeAndVerifyFile(path.join(detailPagePath, 'page.tsx'), detailPageContent)) {
+            console.error(chalk.red(`\nFalha ao gerar ${pluralModelName}/[id]/page.tsx.`));
+            process.exit(1);
+        }
+        console.log(chalk.green.bold(`\n✅ Páginas para o modelo ${modelName} geradas com sucesso!`));
+        console.log(chalk.cyan.bold('\nPróximos passos:'));
+        console.log(`   1. Verifique os arquivos gerados em ${chalk.yellow(`app/${pluralModelName}`)}`);
+        console.log(`   2. Execute ${chalk.yellow('npm run dev')} para testar suas novas páginas.`);
+    }
+    catch (error) {
+        console.error(chalk.red('\nOcorreu um erro ao gerar as páginas:'), error.message, error);
         process.exit(1);
     }
 });
