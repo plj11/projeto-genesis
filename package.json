@@ -1,0 +1,7 @@
+{
+  "name": "projeto-genesis-monorepo",
+  "private": true,
+  "workspaces": [
+    "packages/*"
+  ]
+}
