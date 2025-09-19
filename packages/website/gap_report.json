@@ -1,0 +1,42 @@
+[
+  {
+    "item": "Prettier",
+    "type": "Tool",
+    "layer": 1,
+    "category": "Code Formatting",
+    "purpose": "Enforces a consistent code style across the entire codebase, integrating with the linter.",
+    "status": "MISSING"
+  },
+  {
+    "item": "Husky & Commitlint",
+    "type": "Tool",
+    "layer": 1,
+    "category": "Code Governance",
+    "purpose": "Enforces conventional commit messages and enables running scripts on git hooks (e.g., pre-commit).",
+    "status": "MISSING"
+  },
+  {
+    "item": "Playwright",
+    "type": "Tool",
+    "layer": 2,
+    "category": "Testing",
+    "purpose": "Enables End-to-End (E2E) testing to validate full application flows.",
+    "status": "MISSING"
+  },
+  {
+    "item": "Semgrep",
+    "type": "Tool",
+    "layer": 2,
+    "category": "Security Analysis (DevSecOps)",
+    "purpose": "Provides static application security testing (SAST) integrated into the SDLC.",
+    "status": "MISSING"
+  },
+  {
+    "item": "Docker",
+    "type": "Tool",
+    "layer": 3,
+    "category": "Infrastructure & Deployment",
+    "purpose": "Provides containerization for consistent development and production environments.",
+    "status": "MISSING"
+  }
+]

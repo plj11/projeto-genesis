@@ -1,0 +1,46 @@
+{
+  "name": "website",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "postinstall": "prisma generate --schema=../../prisma/schema.prisma",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "test:e2e": "playwright test",
+    "scan:security": "npx semgrep scan --config auto",
+    "prepare": "husky"
+  },
+  "dependencies": {
+    "@auth/prisma-adapter": "^2.10.0",
+    "@heroicons/react": "^2.2.0",
+    "bcrypt": "^5.1.1",
+    "next": "^14.2.32",
+    "next-auth": "^4.24.11",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
+  },
+  "devDependencies": {
+    "@commitlint/cli": "^19.8.1",
+    "@commitlint/config-conventional": "^19.8.1",
+    "@eslint/eslintrc": "^2.1.4",
+    "@playwright/test": "^1.55.0",
+    "@types/bcrypt": "^5.0.2",
+    "@types/node": "^20",
+    "@types/react": "^18.3.24",
+    "@types/react-dom": "^18.3.7",
+    "autoprefixer": "^10.4.21",
+    "eslint": "^8.57.1",
+    "eslint-config-next": "^14.2.32",
+    "eslint-config-prettier": "^10.1.8",
+    "husky": "^9.1.7",
+    "postcss": "^8.5.6",
+    "prettier": "^3.6.2",
+    "tailwindcss": "^3.4.17",
+    "typescript": "^5",
+    "vercel": "^48.0.0"
+  }
+}

@@ -1,0 +1,28 @@
+# Dependencies
+/node_modules
+
+# Next.js build output
+/.next/
+/out/
+
+# Production
+/build
+
+# Miscellaneous
+.DS_Store
+*.pem
+
+# Environment variables
+.env
+.env*.local
+
+# Prisma
+/prisma/dev.db
+/prisma/dev.db-journal
+
+# Vercel
+.vercel
+
+# Test results
+/test-results/
+/playwright-report/

@@ -1,0 +1,1 @@
+Servir como a aplicação web principal e ponto de entrada para os usuários do projeto 'Gênesis'. As responsabilidades incluem gerenciar o registro e a autenticação de usuários, fornecer a interface de usuário principal e garantir uma experiência moderna, responsiva e escalável. O projeto é construído com Next.js e TypeScript, otimizado para deploy na plataforma Vercel.

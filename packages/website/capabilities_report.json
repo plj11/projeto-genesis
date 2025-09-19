@@ -1,0 +1,48 @@
+{
+  "tools": [
+    {
+      "name": "list_directory",
+      "description": "Lista arquivos e diretórios em um caminho específico. Essencial para a exploração inicial da estrutura do projeto."
+    },
+    {
+      "name": "read_file",
+      "description": "Lê o conteúdo de um único arquivo. Usado para inspecionar configurações, código-fonte e outros artefatos."
+    },
+    {
+      "name": "search_file_content",
+      "description": "Busca por um padrão (regex) dentro dos arquivos do projeto. Útil para localizar rapidamente trechos de código ou configurações específicas."
+    },
+    {
+      "name": "glob",
+      "description": "Encontra arquivos que correspondem a um padrão glob. Fundamental para localizar grupos de arquivos (ex: todos os `*.ts` ou `package.json` do projeto)."
+    },
+    {
+      "name": "replace",
+      "description": "Substitui um trecho de texto específico dentro de um arquivo. Requer contexto preciso para garantir que a alteração seja feita no local correto."
+    },
+    {
+      "name": "write_file",
+      "description": "Escreve (cria ou sobrescreve) conteúdo em um arquivo. Usado para criar novos módulos, arquivos de configuração ou salvar relatórios como este."
+    },
+    {
+      "name": "web_fetch",
+      "description": "Processa conteúdo de URLs. Útil para buscar documentação externa ou dados de APIs."
+    },
+    {
+      "name": "read_many_files",
+      "description": "Lê o conteúdo de múltiplos arquivos de uma só vez. Eficiente para obter um contexto amplo do código em vários módulos."
+    },
+    {
+      "name": "run_shell_command",
+      "description": "Executa um comando de shell. Capacidade poderosa para instalar dependências, rodar testes, executar builds e interagir com a infraestrutura do projeto."
+    },
+    {
+      "name": "save_memory",
+      "description": "Salva uma informação específica na minha memória de longo prazo para uso em interações futuras."
+    },
+    {
+      "name": "google_web_search",
+      "description": "Realiza uma busca na web para encontrar informações, documentações ou soluções para problemas."
+    }
+  ]
+}
