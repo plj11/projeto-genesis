@@ -1,4 +1,4 @@
-import type { NextAuthConfig } from 'next-auth'
+import type { NextAuthOptions } from 'next-auth'
 import Credentials from 'next-auth/providers/credentials'
 import Google from 'next-auth/providers/google'
 import GitHub from 'next-auth/providers/github'
@@ -36,4 +36,4 @@ export const authConfig = {
       return true
     },
   },
-} satisfies NextAuthConfig
+} satisfies NextAuthOptions
