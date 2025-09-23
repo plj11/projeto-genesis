@@ -14,6 +14,10 @@ export const authConfig = {
       clientSecret: process.env.GITHUB_SECRET!,
     }),
     Credentials({
+      credentials: {
+        email: { label: "Email", type: "email" },
+        password: { label: "Password", type: "password" },
+      },
       async authorize(credentials) {
         // A lógica de autorização será adicionada no arquivo auth.ts principal
         return null
