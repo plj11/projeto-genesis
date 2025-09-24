@@ -24,7 +24,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     // A lógica do provedor de credenciais é sobrescrita aqui para usar o bcrypt
     // @ts-ignore
     Credentials({
-      async authorize(credentials) {
+      async authorize(credentials: any) {
         if (credentials.email && credentials.password) {
           const user = await prisma.user.findUnique({
             where: { email: credentials.email as string },
