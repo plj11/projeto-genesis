@@ -32,6 +32,10 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       clientSecret: process.env.GITHUB_SECRET!,
     }),
     Credentials({
+      credentials: {
+        email: { label: "Email", type: "email" },
+        password: { label: "Password", type: "password" },
+      },
       async authorize(credentials: any) {
         if (credentials.email && credentials.password) {
           const user = await prisma.user.findUnique({
