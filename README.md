@@ -65,3 +65,5 @@ Para contribuir com o desenvolvimento do Gênesis, siga os passos abaixo:
 ## Licença
 
 Este projeto é distribuído sob a licença MIT.
+
+<!-- trigger build -->
