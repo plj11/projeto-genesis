@@ -5,6 +5,6 @@
     "packages/*"
   ],
   "scripts": {
-    "build": "npm run build --workspace=website"
+    "build": "npx prisma migrate deploy && npm run build --workspace=website"
   }
 }
